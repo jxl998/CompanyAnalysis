@@ -1,6 +1,8 @@
 import pandas as pd
 import os
 from sklearn.datasets.base import Bunch
+from sklearn.preprocessing import LabelEncoder
+
 import json
 
 # *************** Preparing Data ***************
@@ -50,14 +52,29 @@ def create_meta():
         json.dump(meta, f, indent=2)
 
 
+#对categorical_features进行LabelEncoder处理
+def sovle_cf():
+    with open(os.path.join('../data/company_meta.json'), 'r') as f:
+        meta = json.load(f)
+    cf = meta['categorical_features']
+    le = LabelEncoder()
+    for i in cf:
+        data[i] = le.fit_transform(data[i].astype(str))
+        print(type(data[i]))
+        print(data[i])
+
+    return data
+
+
 # *************** Load data ***************
 def load_data():
     with open(os.path.join('../data/company_meta.json'), 'r') as f:
         meta = json.load(f)
     names = meta['feature_names']
-    train = pd.read_csv('../data/company_data.csv', usecols=names, engine='python')
+    #这行代码报错
+    # train = pd.read_csv('../data/company_data.csv', usecols=names, engine='python')
     return Bunch(
-        data=train[names],
+        # data=train[names],
         feature_names=meta['feature_names'],
         categorical_features=meta['categorical_features'],
     )
@@ -71,5 +88,6 @@ if __name__ == "__main__":
 
     print('\n*************** load data ***************')
     dataset = load_data()
+
 
     # 接下来都用dataset 比如 dataset.data dataset.feature_names dataset.categorical_features
