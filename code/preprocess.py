@@ -10,6 +10,7 @@ import json
 # data = pd.read_csv('data/company_data.csv', dtype={'taxunpaidnum':float})
 data = pd.read_csv('../data/company_data.csv', low_memory=False)
 data.head()
+remove_list = ["taxunpaidnum", "iftopub", "xzbz", "xzbzmc", "cbztmc", ]
 
 
 # *************** Data quality report ***************
@@ -60,9 +61,6 @@ def sovle_cf():
     le = LabelEncoder()
     for i in cf:
         data[i] = le.fit_transform(data[i].astype(str))
-        print(type(data[i]))
-        print(data[i])
-
     return data
 
 
@@ -82,7 +80,7 @@ def load_data():
 
 if __name__ == "__main__":
     quality_report()
-    if not os.path.exists('../data/company_data.json'):
+    if not os.path.exists('../data/company_meta.json'):
         print('\n*************** preparing meta ***************')
         create_meta()
 
